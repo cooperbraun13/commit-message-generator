@@ -10,7 +10,10 @@
     "clean": "rimraf packages/**/dist",
     "test": "vitest run",
     "test:watch": "vitest",
-    "prepare": ""
+    "prepare": "",
+    "web:dev": "npm --workspace packages/cmg-web run dev",
+    "web:build": "npm --workspace packages/cmg-web run build",
+    "web:preview": "npm --workspace packages/cmg-web run preview"
   },
   "devDependencies": {
     "@types/node": "^20.12.5",
