@@ -4,7 +4,7 @@ Monorepo containing `@cmg/core` and `cmg-cli`.
 
 ### Quick Start
 
-1. Install deps:
+1. Install dependencies:
 
 ```bash
 npm install
@@ -42,5 +42,3 @@ npx cmg print
 ### License
 
 MIT
-
-
