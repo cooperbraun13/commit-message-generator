@@ -2,7 +2,7 @@
   "name": "cmg-cli",
   "version": "0.1.0",
   "bin": {
-    "cmg": "dist/index.js"
+    "cmggen": "dist/index.js"
   },
   "type": "commonjs",
   "license": "MIT",

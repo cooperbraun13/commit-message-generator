@@ -24,7 +24,7 @@ async function ensureStagedChanges(): Promise<void> {
   const { status, stdout } = runGit(["diff", "--name-only", "--cached"]);
   if (status !== 0) throw new Error("Failed to check staged changes");
   if (!stdout.trim()) {
-    throw new Error("No staged changes. Stage files before running cmg.");
+    throw new Error("No staged changes. Stage files before running cmggen.");
   }
 }
 
@@ -107,7 +107,7 @@ async function promptForMessage() {
 async function main() {
   const program = new Command();
   program
-    .name("cmg")
+    .name("cmggen")
     .description("Commit Message Generator - conventional commits helper")
     .version("0.1.0");
 

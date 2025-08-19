@@ -19,19 +19,19 @@ npm run build
 3. Use CLI (from a git repo with staged changes):
 
 ```bash
-npx cmg commit
+npm exec --workspace packages/cmg-cli cmggen commit
 ```
 
 or print suggestion only:
 
 ```bash
-npx cmg print
+npm exec --workspace packages/cmg-cli cmggen print
 ```
 
 ### Packages
 
 - `@cmg/core`: diff parser, change classifier, message builder
-- `cmg-cli`: interactive CLI powered by Inquirer and Commander
+- `cmg-cli`: interactive CLI powered by Inquirer and Commander (bin: `cmggen`)
 
 ### Security & Privacy
 

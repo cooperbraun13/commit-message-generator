@@ -32,15 +32,15 @@ export function App() {
             <ol>
               <li><code>npm install -D cmg-cli</code></li>
               <li>Stage your changes: <code>git add .</code></li>
-              <li>Run <code>npx cmg commit</code></li>
+              <li>Run <code>npx cmggen commit</code></li>
             </ol>
           </div>
 
           <div id="cli" className="card">
             <h2>CLI commands</h2>
             <ul>
-              <li><code>cmg commit</code> — interactive flow, then commits</li>
-              <li><code>cmg print</code> — prints a suggested message</li>
+              <li><code>cmggen commit</code> — interactive flow, then commits</li>
+              <li><code>cmggen print</code> — prints a suggested message</li>
             </ul>
           </div>
 
@@ -76,7 +76,7 @@ BREAKING CHANGE: replaces legacy diff parser`}
           <div className="callout-inner">
             <h3>Generate clean commits now</h3>
             <p>Run the CLI in your repo with staged changes.</p>
-            <pre className="inline-code">npx cmg commit</pre>
+            <pre className="inline-code">npx cmggen commit</pre>
           </div>
         </section>
       </main>
