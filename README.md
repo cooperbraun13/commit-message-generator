@@ -42,3 +42,8 @@ npx cmg print
 ### License
 
 MIT
+
+### Author
+
+Cooper Braun
+CS @ Gonzaga '27
