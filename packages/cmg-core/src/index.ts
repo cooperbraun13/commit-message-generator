@@ -104,18 +104,71 @@ export function buildSuggestedMessageFromDiff(diff: DiffInfo): {
 } {
   const paths = diff.filesChanged.map((f) => f.path);
   const type = classifyChangeTypes(paths);
-  const scope = inferScopeFromPathList(paths);
-  const suggestedSubject = generateSubjectFromPaths(paths);
+  const scope = inferDominantScope(paths) ?? inferScopeFromPathList(paths);
+  const suggestedSubject = generateSmartSubjectFromPaths(paths);
   return { type, scope, suggestedSubject };
 }
 
-function generateSubjectFromPaths(paths: string[]): string {
+// --- Improved scope/subject inference ---
+const IGNORED_ROOT_FILENAMES = new Set([
+  "README.md",
+  "LICENSE",
+  "package-lock.json",
+  "pnpm-lock.yaml",
+  "yarn.lock",
+  ".gitignore",
+  ".npmrc",
+]);
+
+function extractScopeFromPath(filePath: string): { scope: string; isRoot: boolean } {
+  if (!filePath.includes("/")) {
+    // Root-level file
+    return { scope: "repo", isRoot: true };
+  }
+  const segments = filePath.split("/");
+  if (segments[0] === "packages" && segments.length >= 2) {
+    return { scope: segments[1], isRoot: false };
+  }
+  return { scope: segments[0], isRoot: false };
+}
+
+function scopeHistogram(paths: string[]): Map<string, number> {
+  const counts = new Map<string, number>();
+  for (const p of paths) {
+    const { scope, isRoot } = extractScopeFromPath(p);
+    if (isRoot && IGNORED_ROOT_FILENAMES.has(p)) continue;
+    if (scope === "repo" && isRoot) continue;
+    counts.set(scope, (counts.get(scope) ?? 0) + 1);
+  }
+  return counts;
+}
+
+export function inferDominantScope(paths: string[], threshold = 0.6): string | undefined {
+  const counts = scopeHistogram(paths);
+  if (counts.size === 0) return undefined;
+  let total = 0;
+  for (const v of counts.values()) total += v;
+  const sorted = [...counts.entries()].sort((a, b) => b[1] - a[1]);
+  const [topScope, topCount] = sorted[0];
+  if (topCount / total >= threshold) return topScope;
+  return undefined;
+}
+
+export function generateSmartSubjectFromPaths(paths: string[]): string {
   if (paths.length === 0) return "update";
   if (paths.length === 1) {
     const name = paths[0].split("/").slice(-1)[0];
     return `update ${name}`;
   }
-  const top = inferScopeFromPathList(paths) ?? "repo";
-  return `update ${top} (${paths.length} files)`;
+  const counts = scopeHistogram(paths);
+  const totalCount = [...counts.values()].reduce((a, b) => a + b, 0);
+  if (totalCount === 0) return `update repo (${paths.length} files)`;
+  const sorted = [...counts.entries()].sort((a, b) => b[1] - a[1]);
+  const [topScope, topCount] = sorted[0];
+  if (topCount / totalCount >= 0.6) {
+    return `update ${topScope} (${paths.length} files)`;
+  }
+  const topScopes = sorted.slice(0, 3).map(([s]) => s).join(", ");
+  return `update ${topScopes} (${paths.length} files)`;
 }
 
